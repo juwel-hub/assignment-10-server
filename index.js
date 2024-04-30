@@ -1,12 +1,13 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 5000;
 
 // middleWare
 app.use(cors());
+
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.zbpbuag.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -27,8 +28,26 @@ async function run() {
     const travelCollection = client.db("travelDB").collection("travel");
 
     app.get("/travels", async (req, res) => {
-      console.log(object);
+      const cursor = travelCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
     });
+
+    app.get("/myProduct/:email", async (req, res) => {
+      const result = await travelCollection
+        .find({ email: req.params.email })
+        .toArray();
+      res.send(result);
+    });
+
+    app.get("/singleProduct/:id", async (req, res) => {
+      console.log(req.params.id);
+      result = await travelCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
+
     app.post("/travels", async (req, res) => {
       const newTravel = req.body;
       console.log(newTravel);
