@@ -54,6 +54,47 @@ async function run() {
       const result = await travelCollection.insertOne(newTravel);
       res.send(result);
     });
+
+    // app.get("/travels/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: new ObjectId(id) };
+    //   const result = await travelCollection.findOne(query);
+    //   res.send(result);
+    // });
+
+    app.put("/updateProduct/:id", async (req, res) => {
+      const travelId = req.params.id;
+
+      // Convert the string ID to ObjectId
+      const filter = { _id: new ObjectId(travelId) };
+      const options = { upsert: true };
+      const updatedTravel = req.body;
+      const travel = {
+        $set: {
+          country: updatedTravel.country,
+          touristSport: updatedTravel.touristSport,
+          location: updatedTravel.location,
+          averageCost: updatedTravel.averageCost,
+          description: updatedTravel.description,
+          image: updatedTravel.image,
+          travelTime: updatedTravel.travelTime,
+          visitors: updatedTravel.visitors,
+          seasonality: updatedTravel.seasonality,
+          email: updatedTravel.email,
+          name: updatedTravel.name,
+        },
+      };
+      const result = await travelCollection.updateOne(filter, travel, options);
+      res.send(result);
+    });
+
+    app.delete("travels/id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await travelCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
