@@ -26,6 +26,18 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const travelCollection = client.db("travelDB").collection("travel");
+    const blocCollection = client.db("travelDB").collection("blog");
+    const countryCollection = client.db("travelDB").collection("countries");
+    app.get("/countriesData", async (req, res) => {
+      const cursor = countryCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.get("/blogs", async (req, res) => {
+      const cursor = blocCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     app.get("/travels", async (req, res) => {
       const cursor = travelCollection.find();
